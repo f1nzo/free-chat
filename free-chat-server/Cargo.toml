@@ -1,0 +1,16 @@
+[package]
+name = "free-chat-server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+env_logger = "0.9.1"
+log = "0.4.17"
+tokio = { version = "0.2", features = ["full"] }
+warp = "0.2"
+serde = {version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+futures = { version = "0.3", default-features = false }
+uuid = { version = "0.4", features = ["serde", "v4"] }
+tor-stream = "0.3.0"
+mini-redis = "0.4.1"
