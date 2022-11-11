@@ -2,11 +2,8 @@ use std::net::{TcpListener, TcpStream};
 use serde::{Deserialize, Serialize};
 use std::io::prelude::*;
 use log::{debug, error, warn, log_enabled, info, Level};
-
-// #[derive(Deserialize, Serialize)]
-// enum ClientMessage {
-
-// }
+use tokio::time::{Duration, sleep};
+use mini_redis::{client};
 
 #[derive(Deserialize, Serialize)]
 enum ServerMessage {
@@ -52,7 +49,14 @@ pub async fn handle_connection(mut stream: TcpStream) {
 
             match msg {
                 ServerMessage::Login(login) => {
-                    handle_login(login);
+                    match handle_login(login).await {
+                        Ok(_) => {
+                            info!("Login successful");
+                        },
+                        Err(e) => {
+                            error!("Login failed: {}", e);
+                        }
+                    }
                 },
                 ServerMessage::Logout(_logout) => {
                     error!("Unable to logout as first server message");
@@ -68,13 +72,22 @@ pub async fn handle_connection(mut stream: TcpStream) {
     }
 }
 
-async fn handle_login(login: Login) {
+async fn handle_login(login: Login) -> Result<i32, String> {
+    sleep(Duration::from_millis(100)).await; // simulated database lookup
     match login {
-        Login::UserPass(credentials) => {
-            info!("Login attempt with Username: {}, Password: {}", credentials.username, credentials.password);
+        Login::UserPass(user_pass_login) => {
+            if user_pass_login.username == "user" && user_pass_login.password == "pass" {
+                Ok(123) // returns session ID
+            } else {
+                Err("invalid username or password".to_string())
+            }
         },
-        Login::Token(token) => {
-            info!("Login attempt with Token: {}", token.token);
+        Login::Token(token_login) => {
+            if token_login.token == "token" {
+                Ok(123) // returns session ID
+            } else {
+                Err("invalid token".to_string())
+            }
         }
     }
 }

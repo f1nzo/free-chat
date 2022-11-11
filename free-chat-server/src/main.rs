@@ -1,12 +1,12 @@
 use std::net::{TcpListener, TcpStream};
 use log::{debug, error, warn, log_enabled, info, Level};
 use env_logger::Env;
-use mini_redis::{client, Result};
+use mini_redis::{client};
 
 mod server;
 
 #[tokio::main]
-async fn main() -> Result<()>  {
+async fn main() -> Result<(), String>  {
     env_logger::Builder::from_env(Env::default()
         .default_filter_or("debug")) // set to "info" level for production
         .init();
