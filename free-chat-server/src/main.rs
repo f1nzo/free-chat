@@ -19,7 +19,7 @@ async fn main() -> Result<()>  {
         tokio::spawn(async move {
             let mut stream: TcpStream = stream.unwrap();
             info!("New connection: {}", stream.peer_addr().unwrap());
-            server::handle_connection(stream);
+            server::handle_connection(stream).await;
         });
     }
 
